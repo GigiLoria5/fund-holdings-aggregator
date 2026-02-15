@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from src.file_utils import find_header_row
+from src.header_detector import HeaderDetector
 
 
 @pytest.mark.parametrize(
@@ -59,7 +59,7 @@ from src.file_utils import find_header_row
 def test_find_header_row(data: list[list[str | float]], expected: int | None) -> None:
     df = pd.DataFrame(data)
 
-    header_row = find_header_row(df)
+    header_row = HeaderDetector.find_header_row(df)
 
     assert header_row == expected
 
@@ -83,6 +83,6 @@ def test_find_header_row_max_search_rows(
         ],
     )
 
-    header_row = find_header_row(df, max_search_rows=max_search_rows)
+    header_row = HeaderDetector.find_header_row(df, max_search_rows=max_search_rows)
 
     assert header_row == expected
