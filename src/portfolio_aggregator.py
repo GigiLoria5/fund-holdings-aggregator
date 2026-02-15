@@ -1,4 +1,4 @@
-def hello() -> str:
-    return "Hello from portfolio-holdings-aggregator!"
-
-print(hello())
+class PortfolioAggregator:
+    @staticmethod
+    def run() -> None:
+        print("Hello")
