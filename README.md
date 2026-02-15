@@ -1,4 +1,4 @@
-# Portfolio Holdings Aggregator
+# Fund Holdings Aggregator
 
 Transforms detailed fund holdings into aggregated data grouped by:
 
@@ -20,48 +20,42 @@ Transforms detailed fund holdings into aggregated data grouped by:
 1. Clone this repository:
 
     ```bash
-    git clone https://github.com/GigiLoria5/portfolio-holdings-aggregator.git
+    git clone https://github.com/GigiLoria5/fund-holdings-aggregator.git
     ```
 
 2. Install dependencies:
 
     ```bash
-    pip install -r requirements.txt
+    make install
     ```
 
 ## Usage
 
-### Basic Usage
+### Using the Makefile (Recommended)
 
 ```bash
-  python portfolio_aggregator.py input_file.xlsx
-```
+# View all available commands
+make help
 
-This creates `aggregated_holdings.xlsx` in the current directory.
+# Run with input file (creates aggregated_holdings.xlsx)
+make run INPUT=holdings.xlsx
 
-### Specify Output File
-
-```bash
-  python portfolio_aggregator.py holdings.xlsx output.xlsx
-```
-
-### Example
-
-```bash
-  python portfolio_aggregator.py holdings-daily-emea-en-spyy-gy.xlsx my_aggregated_data.xlsx
+# Specify custom output file
+make run INPUT=holdings.xlsx OUTPUT=my_output.xlsx
 ```
 
 ## Input File Format
 
-The tool expects Excel files with the following columns (header row auto-detected):
+Your Excel file needs **4 columns** containing these keywords (case-insensitive, partial match):
 
-| Column                    | Description                      |
-|---------------------------|----------------------------------|
-| **Security Name**         | Name of the security (required)  |
-| **Currency**              | Currency code (USD, EUR, etc.)   |
-| **Percent of Fund**       | Weight in the fund as percentage |
-| **Trade Country Name**    | Country of the security          |
-| **Sector Classification** | Sector name                      |
+| Keyword      | Description           | Example Column Names                        |
+|--------------|-----------------------|---------------------------------------------|
+| **Currency** | Currency code         | "Currency", "Trade Currency", "CURRENCY"    |
+| **Percent**  | Weight/percentage     | "Percent of Fund", "Weight %", "percent"    |
+| **Country**  | Country name          | "Country", "Trade Country Name", "COUNTRY"  |
+| **Sector**   | Sector classification | "Sector", "Sector Classification", "SECTOR" |
+
+**Important:** Each keyword must appear in exactly ONE column (unique match).
 
 ### Example Input
 
@@ -79,7 +73,7 @@ US5949181045  | Microsoft Corporation   | USD      | 2.955187        | United St
 The tool automatically:
 
 - Skips metadata rows at the top
-- Detects the header row
+- Detects the header row by matching columns case-insensitively
 - Handles missing or malformed data
 - Removes empty rows
 
@@ -104,6 +98,36 @@ The output Excel file contains aggregated data with these columns:
 | Japan          | Developed   | JPY      | Industrials            | 5.00%  |
 | United Kingdom | Developed   | GBP      | Financials             | 3.39%  |
 
+## Testing
+
+```bash
+# Run tests with pytest
+make test
+```
+
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome!
+
+```bash
+# Fork and clone
+git clone https://github.com/yourusername/fund-holdings-aggregator.git
+
+# Create a feature branch
+git checkout -b feature/my-feature
+
+# Format code
+make lint
+
+# Test changes
+make test
+
+# Commit and push
+git commit -am "Add feature"
+git push origin feature/my-feature
+```
+
+## License
+
+MIT License - See [LICENSE](LICENSE) for details.
+
