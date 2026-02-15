@@ -116,11 +116,11 @@ def test_column_mapping_missing_column() -> None:
     columns = pd.Index(["Currency", "Percent", "Country"])
     with pytest.raises(ValueError) as exc_info:
         HeaderDetector.map_columns(columns)
-        assert "sector" in str(exc_info.value)
+    assert "sector" in str(exc_info.value)
 
 
 def test_column_mapping_duplicate_match() -> None:
     columns = pd.Index(["Currency", "Trade Currency", "Percent", "Country", "Sector"])
     with pytest.raises(ValueError) as exc_info:
         HeaderDetector.map_columns(columns)
-        assert "currency" in str(exc_info.value)
+    assert "currency" in str(exc_info.value)

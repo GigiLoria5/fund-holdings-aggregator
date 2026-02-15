@@ -21,13 +21,3 @@ class ColumnPatterns:
     @classmethod
     def get_all(cls) -> list[str]:
         return [cls.CURRENCY, cls.PERCENT, cls.COUNTRY, cls.SECTOR]
-
-    @classmethod
-    def to_standard_name(cls, pattern: str) -> str:
-        mapping = {
-            cls.CURRENCY: ColumnNames.CURRENCY,
-            cls.PERCENT: ColumnNames.PERCENT,
-            cls.COUNTRY: ColumnNames.COUNTRY,
-            cls.SECTOR: ColumnNames.SECTOR,
-        }
-        return mapping[pattern]

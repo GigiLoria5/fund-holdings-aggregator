@@ -8,7 +8,7 @@ def test_run() -> None:
     input_file = build_file_path("spyy-gy.xlsx")
     output_file = build_file_path("aggregated_holdings.xlsx")
     assert input_file.exists()
-    assert output_file.exists() == False
+    assert output_file.exists() is False
 
     HoldingsPipeline.run(input_file, output_file)
 
