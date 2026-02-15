@@ -16,8 +16,12 @@ from src.market_classifier import MarketClassifier
         ("Brazil", "Emerging"),
         ("Vietnam", "Frontier"),
         ("Kenya", "Frontier"),
-        (None, "Unknown"),
-        ("", "Unknown"),
+        ("Ukraine", ""),
+        ("Panama", ""),
+        ("USA", ""),
+        ("UK", ""),
+        (None, ""),
+        ("", ""),
     ],
 )
 def test_classify(country: str | None, expected: str) -> None:

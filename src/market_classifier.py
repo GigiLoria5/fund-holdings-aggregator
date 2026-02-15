@@ -60,13 +60,49 @@ class MarketClassifier:
         "Taiwan",
     }
 
+    FRONTIER_MARKETS = {
+        # EMEA
+        "Bahrain",
+        "Benin",
+        "Burkina Faso",
+        "Croatia",
+        "Guinea-Bissau",
+        "Iceland",
+        "Ivory Coast",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Mali",
+        "Mauritius",
+        "Morocco",
+        "Niger",
+        "Oman",
+        "Senegal",
+        "Serbia",
+        "Togo",
+        "Tunisia",
+        "Estonia",
+        "Latvia",
+        "Lithuania",
+        "Romania",
+        "Slovenia",
+        # APAC
+        "Bangladesh",
+        "Pakistan",
+        "Sri Lanka",
+        "Vietnam",
+    }
+
     @classmethod
     def classify(cls, country: str | None) -> str:
-        if not country or not isinstance(country, str):
-            return "Unknown"
+        if not country:
+            return ""
         country = str(country).strip().title()
         if country in cls.DEVELOPED_MARKETS:
             return "Developed"
         if country in cls.EMERGING_MARKETS:
             return "Emerging"
-        return "Frontier"
+        if country in cls.FRONTIER_MARKETS:
+            return "Frontier"
+        print(f"Unable to classify {country}")
+        return ""
