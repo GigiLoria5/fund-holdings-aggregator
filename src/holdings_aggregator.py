@@ -1,34 +1,54 @@
-from pathlib import Path
-
 import pandas as pd
 
-from src.holdings_file_handler import HoldingsFileHandler
+from src.constants import ColumnNames
 from src.market_classifier import MarketClassifier
 
 
 class HoldingsAggregator:
     @classmethod
-    def run(cls, input_file_path: Path, output_file_path: Path) -> None:
-        holdings_df = HoldingsFileHandler.read(input_file_path)
-        aggregated_df = cls.aggregate(holdings_df)
-        HoldingsFileHandler.write(output_file_path, aggregated_df)
-
-    @classmethod
     def aggregate(cls, holdings: pd.DataFrame) -> pd.DataFrame:
         print("Aggregating data...")
-        df = holdings.copy()
-        aggregated = (
-            df.groupby(["Country", "Currency", "Sector"], as_index=False)["Percent"]
+        holdings = holdings.copy()
+        aggregated = cls._group_and_sum(holdings)
+        aggregated = cls._add_market_classification(aggregated)
+        aggregated = cls._sort_results(aggregated)
+        print(f"Created {len(aggregated)} aggregated groups")
+        return cls._select_output_columns(aggregated)
+
+    @staticmethod
+    def _group_and_sum(df: pd.DataFrame) -> pd.DataFrame:
+        return (
+            df.groupby(
+                [ColumnNames.COUNTRY, ColumnNames.CURRENCY, ColumnNames.SECTOR],
+                as_index=False,
+            )[ColumnNames.PERCENT]
             .sum()
-            .rename(columns={"Percent": "Weight"})
+            .rename(columns={ColumnNames.PERCENT: ColumnNames.WEIGHT})
         )
-        aggregated["Market Type"] = aggregated["Country"].apply(
+
+    @staticmethod
+    def _add_market_classification(df: pd.DataFrame) -> pd.DataFrame:
+        df[ColumnNames.MARKET_TYPE] = df[ColumnNames.COUNTRY].apply(
             MarketClassifier.classify
         )
-        aggregated = aggregated.sort_values(
-            by=["Weight", "Country"],
+        return df
+
+    @staticmethod
+    def _sort_results(df: pd.DataFrame) -> pd.DataFrame:
+        return df.sort_values(
+            by=[ColumnNames.WEIGHT, ColumnNames.COUNTRY],
             ascending=[False, True],
             ignore_index=True,
         )
-        print(f"Created {len(aggregated)} aggregated groups")
-        return aggregated[["Country", "Market Type", "Currency", "Sector", "Weight"]]
+
+    @staticmethod
+    def _select_output_columns(df: pd.DataFrame) -> pd.DataFrame:
+        return df[
+            [
+                ColumnNames.COUNTRY,
+                ColumnNames.MARKET_TYPE,
+                ColumnNames.CURRENCY,
+                ColumnNames.SECTOR,
+                ColumnNames.WEIGHT,
+            ]
+        ]

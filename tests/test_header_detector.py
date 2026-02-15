@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 
+from src.constants import ColumnPatterns
 from src.header_detector import HeaderDetector
 
 
@@ -107,7 +108,7 @@ def test_column_mapping_case_insensitive(columns: list[str]) -> None:
     column_map = HeaderDetector.map_columns(pd.Index(columns))
 
     assert len(column_map) == 4
-    for pattern in HeaderDetector.REQUIRED_PATTERNS:
+    for pattern in ColumnPatterns.get_all():
         assert pattern in column_map
 
 

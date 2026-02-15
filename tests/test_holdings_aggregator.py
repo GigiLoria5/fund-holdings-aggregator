@@ -1,7 +1,7 @@
 import pandas as pd
 
+from src.constants import ColumnNames
 from src.holdings_aggregator import HoldingsAggregator
-from tests.utils import build_file_path
 
 
 def test_aggregate() -> None:
@@ -40,15 +40,18 @@ def test_aggregate() -> None:
     assert result.equals(expected)
 
 
-def test_run() -> None:
-    input_file = build_file_path("spyy-gy.xlsx")
-    output_file = build_file_path("aggregated_holdings.xlsx")
-    assert input_file.exists()
-    assert output_file.exists() == False
+def test_aggregate_empty_dataframe():
+    holdings = pd.DataFrame(
+        columns=[
+            ColumnNames.CURRENCY,
+            ColumnNames.PERCENT,
+            ColumnNames.COUNTRY,
+            ColumnNames.SECTOR,
+        ]
+    )
 
-    HoldingsAggregator.run(input_file, output_file)
+    result = HoldingsAggregator.aggregate(holdings)
 
-    assert output_file.exists()
-    result_df = pd.read_excel(output_file)
-    assert len(result_df) > 1
-    output_file.unlink()
+    assert len(result) == 0
+    assert ColumnNames.WEIGHT in result.columns
+    assert ColumnNames.MARKET_TYPE in result.columns

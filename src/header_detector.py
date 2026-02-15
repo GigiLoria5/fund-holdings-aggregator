@@ -1,30 +1,38 @@
 import pandas as pd
 from pandas import DataFrame
 
+from src.constants import ColumnPatterns
+
 
 class HeaderDetector:
-    REQUIRED_PATTERNS = ["currency", "percent", "country", "sector"]
-
     @classmethod
     def find_header_row(cls, df: DataFrame, max_search_rows: int = 20) -> int:
+        required_patterns = ColumnPatterns.get_all()
         search_limit = min(max_search_rows, len(df))
         for i in range(search_limit):
             row_values = [
                 str(val).lower() if pd.notna(val) else "" for val in df.iloc[i]
             ]
-            matches = sum(
-                1
-                for pattern in cls.REQUIRED_PATTERNS
-                if any(pattern.lower() in val for val in row_values)
-            )
-            if matches == len(cls.REQUIRED_PATTERNS):
+            if cls._row_contains_all_patterns(row_values, required_patterns):
                 return i
-        raise ValueError(f"Required columns '{cls.REQUIRED_PATTERNS}' not found")
+        raise ValueError(
+            f"Required columns '{required_patterns}' not found "
+            f"in the first {search_limit} rows"
+        )
+
+    @staticmethod
+    def _row_contains_all_patterns(row_values: list[str], patterns: list[str]) -> bool:
+        matches = sum(
+            1
+            for pattern in patterns
+            if any(pattern.lower() in val for val in row_values)
+        )
+        return matches == len(patterns)
 
     @classmethod
     def map_columns(cls, columns: pd.Index) -> dict[str, str]:
         column_map = {}
-        for pattern in cls.REQUIRED_PATTERNS:
+        for pattern in ColumnPatterns.get_all():
             matches = [col for col in columns if pattern in str(col).lower()]
             if len(matches) != 1:
                 raise ValueError(
