@@ -59,9 +59,12 @@ from src.header_detector import HeaderDetector
 def test_find_header_row(data: list[list[str | float]], expected: int | None) -> None:
     df = pd.DataFrame(data)
 
-    header_row = HeaderDetector.find_header_row(df)
-
-    assert header_row == expected
+    try:
+        header_row = HeaderDetector.find_header_row(df)
+        assert header_row == expected
+    except ValueError:
+        if expected is not None:
+            pytest.fail("Expected header row not found")
 
 
 @pytest.mark.parametrize(
@@ -83,6 +86,40 @@ def test_find_header_row_max_search_rows(
         ],
     )
 
-    header_row = HeaderDetector.find_header_row(df, max_search_rows=max_search_rows)
+    try:
+        header_row = HeaderDetector.find_header_row(df, max_search_rows=max_search_rows)
+        assert header_row == expected
+    except ValueError:
+        if expected is not None:
+            pytest.fail("Expected header row not found")
 
-    assert header_row == expected
+
+@pytest.mark.parametrize(
+    "columns",
+    [
+        ["Currency", "Percent", "Country", "Sector"],
+        ["currency", "percent", "country", "sector"],
+        ["CURRENCY", "PERCENT", "COUNTRY", "SECTOR"],
+        ["Trade Currency", "Percent of Fund", "Trade Country", "Sector Class"],
+    ],
+)
+def test_column_mapping_case_insensitive(columns: list[str]) -> None:
+    column_map = HeaderDetector.map_columns(pd.Index(columns))
+
+    assert len(column_map) == 4
+    for pattern in HeaderDetector.REQUIRED_PATTERNS:
+        assert pattern in column_map
+
+
+def test_column_mapping_missing_column() -> None:
+    columns = pd.Index(["Currency", "Percent", "Country"])
+    with pytest.raises(ValueError) as exc_info:
+        HeaderDetector.map_columns(columns)
+        assert "sector" in str(exc_info.value)
+
+
+def test_column_mapping_duplicate_match() -> None:
+    columns = pd.Index(["Currency", "Trade Currency", "Percent", "Country", "Sector"])
+    with pytest.raises(ValueError) as exc_info:
+        HeaderDetector.map_columns(columns)
+        assert "currency" in str(exc_info.value)
