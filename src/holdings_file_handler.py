@@ -31,10 +31,8 @@ class HoldingsFileHandler:
 
     @staticmethod
     def _clean_data(df: pd.DataFrame) -> pd.DataFrame:
-        df = df.dropna(subset=["Country"])
-        df = df[df["Country"].astype(str).str.strip() != ""]
         df["Percent"] = pd.to_numeric(df["Percent"], errors="coerce")
-        df = df.dropna(subset=["Percent"])
+        df = df[df["Percent"] > 0]
         for col in ["Currency", "Country", "Sector"]:
             df[col] = df[col].fillna("Unknown").astype(str).str.strip()
         return df
@@ -48,14 +46,17 @@ class HoldingsFileHandler:
         for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=True), 1):
             for c_idx, value in enumerate(row, 1):
                 cell = ws.cell(row=r_idx, column=c_idx, value=value)
-                if r_idx == 1:
+                is_header = r_idx == 1
+                if is_header:
                     cell.font = Font(bold=True)
                     cell.fill = PatternFill(
                         start_color="D3D3D3", end_color="D3D3D3", fill_type="solid"
                     )
                     cell.alignment = Alignment(horizontal="center")
-                if c_idx == 5 and r_idx > 1:
-                    cell.number_format = "0.00%"
+                    continue
+                is_weight_cell = c_idx == 5
+                if is_weight_cell:
+                    cell.number_format = "0.00000%"
                     cell.value = (
                         value / 100 if isinstance(value, (int, float)) else value
                     )
