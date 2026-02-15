@@ -1,8 +1,7 @@
-from pathlib import Path
-
 import pandas as pd
 
 from src.holdings_aggregator import HoldingsAggregator
+from tests.utils import build_file_path
 
 
 def test_aggregate() -> None:
@@ -42,12 +41,12 @@ def test_aggregate() -> None:
 
 
 def test_run() -> None:
-    input_file = Path(__file__).parent / "files/spyy-gy.xlsx"
-    output_file = Path(__file__).parent / "files/aggregated_holdings.xlsx"
+    input_file = build_file_path("spyy-gy.xlsx")
+    output_file = build_file_path("aggregated_holdings.xlsx")
     assert input_file.exists()
     assert output_file.exists() == False
 
-    HoldingsAggregator.run(input_file.name, output_file.name)
+    HoldingsAggregator.run(input_file, output_file)
 
     assert output_file.exists()
     result_df = pd.read_excel(output_file)

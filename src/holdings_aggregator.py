@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 
 from src.holdings_file_handler import HoldingsFileHandler
@@ -6,7 +8,7 @@ from src.market_classifier import MarketClassifier
 
 class HoldingsAggregator:
     @classmethod
-    def run(cls, input_file_path: str, output_file_path: str) -> None:
+    def run(cls, input_file_path: Path, output_file_path: Path) -> None:
         holdings_df = HoldingsFileHandler.read(input_file_path)
         aggregated_df = cls.aggregate(holdings_df)
         HoldingsFileHandler.write(output_file_path, aggregated_df)
