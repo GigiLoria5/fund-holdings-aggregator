@@ -1,5 +1,5 @@
 [project]
-name = "portfolio-holdings-aggregator"
+name = "fund-holdings-aggregator"
 version = "0.1.0"
 description = "A Python tool that aggregates fund holdings data by Country, Market Type, Currency, and Sector from Excel files"
 readme = "README.md"
@@ -8,20 +8,22 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "openpyxl>=3.1.5",
-    "pandas>=3.0.0",
+    "openpyxl==3.1.5",
+    "pandas==3.0.0",
 ]
 
 [dependency-groups]
 dev = [
-    "mypy>=1.19.1",
-    "pytest>=9.0.2",
-    "pytest-cov>=7.0.0",
-    "ruff>=0.15.1",
+    "mypy==1.19.1",
+    "pandas-stubs==3.0.0.260204",
+    "pytest==9.0.2",
+    "pytest-cov==7.0.0",
+    "pytest-mock>=3.15.1",
+    "ruff==0.15.1",
 ]
 
 [project.scripts]
-portfolio-holdings-aggregator = "src.main:main"
+fund-holdings-aggregator = "src.main:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -109,4 +111,4 @@ omit = [
 [tool.coverage.report]
 show_missing = true
 skip_empty = true
-fail_under = 80
+fail_under = 99
