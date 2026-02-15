@@ -48,7 +48,7 @@ class MarketClassifier:
         "Saudi Arabia",
         "South Africa",
         "Turkey",
-        "United Arab Emirates",
+        "Uae",
         # APAC
         "China",
         "India",
