@@ -1,12 +1,22 @@
 # Fund Holdings Aggregator
 
-Transforms detailed fund holdings into aggregated data grouped by:
+Transforms detailed fund holdings ([sample source](https://www.ssga.com/it/en_gb/intermediary/etfs/state-street-spdr-msci-all-country-world-ucits-etf-acc-spyy-gy)) into aggregated
+data grouped by:
 
 - Country (e.g., United States, Japan)
 - Market Type (Developed/Emerging/Frontier) - automatically classified based on MSCI definition
 - Currency (USD, EUR, JPY, etc.)
 - Sector (Technology, Financials, etc.)
 - Aggregated Weight (summed percentages)
+
+## Use Cases
+
+This tool can be useful in several practical scenarios:
+
+- **Personal portfolio dashboard** (Excel/Google Sheets/BI tools): Quickly aggregate ETF or fund holdings into country, sector, and currency to build an asset allocation overview.
+- **Investment research & comparison**: Compare geographic or sector allocations across multiple funds to support allocation decisions.
+- **Risk exposure analysis**: Identify concentration risks (e.g., overweight U.S. Tech, single-currency exposure, Emerging Markets tilt).
+- **Quantitative workflows**: Integrate into data pipelines or portfolio analytics programs where normalized exposure of data is required.
 
 ## Installation
 
@@ -101,7 +111,6 @@ The output Excel file contains aggregated data with these columns:
 ## Testing
 
 ```bash
-# Run tests with pytest
 make test
 ```
 
@@ -110,19 +119,14 @@ make test
 Contributions are welcome!
 
 ```bash
-# Fork and clone
 git clone https://github.com/yourusername/fund-holdings-aggregator.git
 
-# Create a feature branch
 git checkout -b feature/my-feature
 
-# Format code
 make lint
 
-# Test changes
 make test
 
-# Commit and push
 git commit -am "Add feature"
 git push origin feature/my-feature
 ```
