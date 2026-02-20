@@ -3,10 +3,8 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
-from pytest_mock import MockerFixture
 
-from src.holdings_pipeline import HoldingsPipeline
-from src.main import main, parse_arguments
+from src.main import InputFileRequired, main, parse_arguments
 
 
 @pytest.mark.parametrize(
@@ -43,12 +41,9 @@ def test_parse_arguments_valid(
     assert output_file == expected_output
 
 
-@pytest.mark.parametrize(
-    ("args", "exception"),
-    [([], ValueError), (None, TypeError)],
-)
-def test_parse_arguments_invalid(args: list[str] | None, exception: Any) -> None:
-    with pytest.raises(exception):
+@pytest.mark.parametrize("args", [[], None])
+def test_parse_arguments_invalid(args: list[str] | None) -> None:
+    with pytest.raises(InputFileRequired):
         parse_arguments(args)
 
 
@@ -82,10 +77,6 @@ def test_main_success(
 
     assert exit_code == 0
     mock_holdings_pipeline_run.assert_called_once_with(expected_input, expected_output)
-
-
-def _mock_holdings_pipeline_run(mocker: MockerFixture) -> MagicMock:
-    return mocker.patch.object(HoldingsPipeline, "run")
 
 
 @pytest.mark.parametrize(

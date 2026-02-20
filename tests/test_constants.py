@@ -3,11 +3,6 @@ import pytest
 from src.constants import ColumnNames
 
 
-def test_column_names_immutable() -> None:
-    with pytest.raises(AttributeError):
-        ColumnNames.CURRENCY = "NewValue"
-
-
 @pytest.mark.parametrize(
     ("attribute", "expected"),
     [

@@ -2,7 +2,11 @@ import pandas as pd
 import pytest
 
 from src.constants import ColumnPatterns
-from src.header_detector import HeaderDetector
+from src.header_detector import (
+    HeaderDetector,
+    HeaderMismatchError,
+    RequiredColumnsNotFound,
+)
 
 
 @pytest.mark.parametrize(
@@ -63,7 +67,7 @@ def test_find_header_row(data: list[list[str | float]], expected: int | None) ->
     try:
         header_row = HeaderDetector.find_header_row(df)
         assert header_row == expected
-    except ValueError:
+    except RequiredColumnsNotFound:
         if expected is not None:
             pytest.fail("Expected header row not found")
 
@@ -90,7 +94,7 @@ def test_find_header_row_max_search_rows(
     try:
         header_row = HeaderDetector.find_header_row(df, max_search_rows=max_search_rows)
         assert header_row == expected
-    except ValueError:
+    except RequiredColumnsNotFound:
         if expected is not None:
             pytest.fail("Expected header row not found")
 
@@ -114,13 +118,13 @@ def test_column_mapping_case_insensitive(columns: list[str]) -> None:
 
 def test_column_mapping_missing_column() -> None:
     columns = pd.Index(["Currency", "Percent", "Country"])
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(HeaderMismatchError) as exc_info:
         HeaderDetector.map_columns(columns)
     assert "sector" in str(exc_info.value)
 
 
 def test_column_mapping_duplicate_match() -> None:
     columns = pd.Index(["Currency", "Trade Currency", "Percent", "Country", "Sector"])
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(HeaderMismatchError) as exc_info:
         HeaderDetector.map_columns(columns)
     assert "currency" in str(exc_info.value)

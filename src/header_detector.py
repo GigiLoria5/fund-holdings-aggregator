@@ -15,10 +15,7 @@ class HeaderDetector:
             ]
             if cls._row_contains_all_patterns(row_values, required_patterns):
                 return i
-        raise ValueError(
-            f"Required columns '{required_patterns}' not found "
-            f"in the first {search_limit} rows"
-        )
+        raise RequiredColumnsNotFound(required_patterns, search_limit)
 
     @staticmethod
     def _row_contains_all_patterns(row_values: list[str], patterns: list[str]) -> bool:
@@ -35,9 +32,22 @@ class HeaderDetector:
         for pattern in ColumnPatterns.get_all():
             matches = [col for col in columns if pattern in str(col).lower()]
             if len(matches) != 1:
-                raise ValueError(
-                    "Expected exactly one column matching pattern "
-                    f"'{pattern}', but found {len(matches)} match(es): {matches}."
-                )
+                raise HeaderMismatchError(pattern, matches)
             column_map[pattern] = matches[0]
         return column_map
+
+
+class RequiredColumnsNotFound(Exception):
+    def __init__(self, required_patterns: list[str], search_limit: int) -> None:
+        super().__init__(
+            f"Required columns '{required_patterns}' not found "
+            f"in the first {search_limit} rows"
+        )
+
+
+class HeaderMismatchError(Exception):
+    def __init__(self, pattern: str, matches: list[str]) -> None:
+        super().__init__(
+            f"Expected exactly one column matching pattern "
+            f"'{pattern}', but found {len(matches)} match(es): {matches}."
+        )

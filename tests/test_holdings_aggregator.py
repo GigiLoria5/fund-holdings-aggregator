@@ -40,7 +40,7 @@ def test_aggregate() -> None:
     assert result.equals(expected)
 
 
-def test_aggregate_empty_dataframe():
+def test_aggregate_empty_dataframe() -> None:
     holdings = pd.DataFrame(
         columns=[
             ColumnNames.CURRENCY,

@@ -8,4 +8,4 @@ from src.holdings_pipeline import HoldingsPipeline
 
 @pytest.fixture
 def mock_holdings_pipeline_run(mocker: MockerFixture) -> MagicMock:
-    return mocker.patch.object(HoldingsPipeline, "run")
+    return mocker.patch.object(HoldingsPipeline, "run")  # type: ignore
