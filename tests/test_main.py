@@ -6,7 +6,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from src.holdings_pipeline import HoldingsPipeline
-from src.main import main, parse_arguments
+from src.main import InputFileRequired, main, parse_arguments
 
 
 @pytest.mark.parametrize(
@@ -43,12 +43,9 @@ def test_parse_arguments_valid(
     assert output_file == expected_output
 
 
-@pytest.mark.parametrize(
-    ("args", "exception"),
-    [([], ValueError), (None, TypeError)],
-)
-def test_parse_arguments_invalid(args: list[str] | None, exception: Any) -> None:
-    with pytest.raises(exception):
+@pytest.mark.parametrize("args", [[], None])
+def test_parse_arguments_invalid(args: list[str] | None) -> None:
+    with pytest.raises(InputFileRequired):
         parse_arguments(args)
 
 

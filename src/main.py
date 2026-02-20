@@ -24,12 +24,17 @@ def _print_usage() -> None:
     print("Example: python -m src.main holdings.xlsx aggregated.xlsx")
 
 
-def parse_arguments(args: list[str]) -> tuple[Path, Path]:
-    if len(args) < 1:
-        raise ValueError("Input file path is required")
+def parse_arguments(args: list[str] | None) -> tuple[Path, Path]:
+    if not args or len(args) < 1:
+        raise InputFileRequired()
     input_file = Path(args[0])
     output_file = Path(args[1]) if len(args) > 1 else Path("aggregated_holdings.xlsx")
     return input_file, output_file
+
+
+class InputFileRequired(ValueError):
+    def __init__(self) -> None:
+        super().__init__("Input file path is required")
 
 
 if __name__ == "__main__":

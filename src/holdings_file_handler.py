@@ -93,7 +93,7 @@ class HoldingsFileHandler:
             cell.value = cell.value / 100
 
     @staticmethod
-    def _adjust_column_widths(ws: Worksheet):
+    def _adjust_column_widths(ws: Worksheet) -> None:
         for col in ws.columns:
             max_length = 0
             column = col[0].column_letter
