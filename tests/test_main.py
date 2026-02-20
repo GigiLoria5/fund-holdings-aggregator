@@ -3,9 +3,7 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
-from pytest_mock import MockerFixture
 
-from src.holdings_pipeline import HoldingsPipeline
 from src.main import InputFileRequired, main, parse_arguments
 
 
@@ -79,10 +77,6 @@ def test_main_success(
 
     assert exit_code == 0
     mock_holdings_pipeline_run.assert_called_once_with(expected_input, expected_output)
-
-
-def _mock_holdings_pipeline_run(mocker: MockerFixture) -> MagicMock:
-    return mocker.patch.object(HoldingsPipeline, "run")
 
 
 @pytest.mark.parametrize(

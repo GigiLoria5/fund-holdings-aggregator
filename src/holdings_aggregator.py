@@ -17,13 +17,13 @@ class HoldingsAggregator:
 
     @staticmethod
     def _group_and_sum(df: pd.DataFrame) -> pd.DataFrame:
-        return (  # type: ignore
+        return (
             df.groupby(
                 [ColumnNames.COUNTRY, ColumnNames.CURRENCY, ColumnNames.SECTOR],
                 as_index=False,
             )[ColumnNames.PERCENT]
             .sum()
-            .rename(columns={ColumnNames.PERCENT: ColumnNames.WEIGHT})  # type: ignore
+            .rename(columns={ColumnNames.PERCENT: ColumnNames.WEIGHT})
         )
 
     @staticmethod
